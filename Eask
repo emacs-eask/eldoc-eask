@@ -11,7 +11,7 @@
 
 (source "gnu")
 (source "jcs-elpa")
-(source "melpa" )
+(source "melpa")
 
 (depends-on "emacs" "26.1")
 (depends-on "eask-api")

@@ -87,7 +87,8 @@ Mainly copy it from `elisp-eldoc-documentation-function' function."
 (defun eldoc-eask-enable ()
   "Turn on `eldoc-eask'."
   (interactive)
-  (add-hook 'eask-mode-hook #'eldoc-eask--turn-on))
+  (add-hook 'eask-mode-hook #'eldoc-eask--turn-on)
+  (eldoc-eask--turn-on))
 
 ;;;###autoload
 (defun eldoc-eask-disable ()
