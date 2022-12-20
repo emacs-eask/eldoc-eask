@@ -6,7 +6,7 @@
 ;; Maintainer: Shen, Jen-Chieh <jcs090218@gmail.com>
 ;; URL: https://github.com/jcs090218/eldoc-eask
 ;; Version: 0.1.0
-;; Package-Requires: ((emacs "26.1"))
+;; Package-Requires: ((emacs "26.1") (eask-api "0.1.0"))
 ;; Keywords: convenience
 
 ;; This file is not part of GNU Emacs.
@@ -31,11 +31,69 @@
 
 ;;; Code:
 
+(require 'eldoc)
+
+(require 'eask-api)
+
 (defgroup eldoc-eask nil
   "Eldoc support for Eask-file."
   :prefix "eldoc-eask-"
   :group 'tool
   :link '(url-link :tag "Repository" "https://github.com/emacs-eask/eldoc-eask"))
+
+;;
+;; (@* "Core" )
+;;
+
+(defun eldoc-eask--funcall (callback &rest _ignored)
+  "Document function call at point.
+
+Mainly copy it from `elisp-eldoc-funcall' function"
+  (when-let* ((sym-info (elisp--fnsym-in-current-sexp))
+              (fn-sym (car sym-info))
+              ((member (format "%s" fn-sym) eask-file-keywords)))
+    (setf (car sym-info) (intern (format "eask-f-%s" fn-sym)))
+    (funcall callback (apply #'elisp-get-fnsym-args-string sym-info)
+             :thing fn-sym
+             :face (if (functionp fn-sym)
+                       'font-lock-function-name-face
+                     'font-lock-keyword-face))))
+
+(defun eldoc-eask--function ()
+  "Main eldoc entry.
+
+Mainly copy it from `elisp-eldoc-documentation-function' function."
+  (let* (str
+         (callback (lambda (doc &rest plist)
+                     (when doc
+                       (setq str
+                             (format "%s: %s"
+                                     (propertize (prin1-to-string
+                                                  (plist-get plist :thing))
+                                                 'face (plist-get plist :face))
+                                     doc))))))
+    (or (progn (eldoc-eask--funcall callback) str))))
+
+(defun eldoc-eask--turn-on ()
+  "Start the `eldoc-eask' worker."
+  (add-function :before-until (local 'eldoc-documentation-function) #'eldoc-eask--function)
+  (eldoc-mode 1))
+
+;;
+;; (@* "Entry" )
+;;
+
+;;;###autoload
+(defun eldoc-eask-enable ()
+  "Turn on `eldoc-eask'."
+  (interactive)
+  (add-hook 'eask-mode-hook #'eldoc-eask--turn-on))
+
+;;;###autoload
+(defun eldoc-eask-disable ()
+  "Turn off `eldoc-eask'."
+  (interactive)
+  (remove-hook 'eask-mode-hook #'eldoc-eask--turn-on))
 
 (provide 'eldoc-eask)
 ;;; eldoc-eask.el ends here
