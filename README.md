@@ -6,6 +6,14 @@
 
 [![CI](https://github.com/emacs-eask/eldoc-eask/actions/workflows/test.yml/badge.svg)](https://github.com/emacs-eask/eldoc-eask/actions/workflows/test.yml)
 
+## 💾 Quickstart
+
+```elisp
+(use-package eldoc-eask
+  :ensure t
+  :hook (eask-mode . (lambda () (eldoc-eask-enable))))
+```
+
 ## Contribute
 
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
