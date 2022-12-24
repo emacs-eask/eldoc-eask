@@ -33,7 +33,7 @@
 
 (require 'eldoc)
 
-(require 'eask-api)
+(require 'eask-api-core)
 
 (defgroup eldoc-eask nil
   "Eldoc support for Eask-file."
@@ -51,7 +51,7 @@
 Mainly copy it from `elisp-eldoc-funcall' function"
   (when-let* ((sym-info (elisp--fnsym-in-current-sexp))
               (fn-sym (car sym-info))
-              ((member (format "%s" fn-sym) eask-file-keywords)))
+              ((member (eask-2str fn-sym) eask-file-keywords)))
     (setf (car sym-info) (intern (format "eask-f-%s" fn-sym)))
     (funcall callback (apply #'elisp-get-fnsym-args-string sym-info)
              :thing fn-sym
