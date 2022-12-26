@@ -42,22 +42,43 @@
   :link '(url-link :tag "Repository" "https://github.com/emacs-eask/eldoc-eask"))
 
 ;;
+;; (@* "Util" )
+;;
+
+(defun eldoc-eask--s-replace (old new s)
+  "Replace OLD with NEW in S each time it occurs."
+  (if (fboundp #'string-replace)
+      (string-replace old new s)
+    (replace-regexp-in-string (regexp-quote old) new s t t)))
+
+;;
 ;; (@* "Core" )
 ;;
+
+(defun eldoc-eask--fnsym-in-current-sexp ()
+  "Mainly copy it from `elisp--fnsym-in-current-sexp' function"
+  (save-excursion
+    (unless (nth 8 (syntax-ppss))
+      (let ((argument-index (1- (elisp--beginning-of-sexp))))
+        ;; If we are at the beginning of function name, this will be -1.
+        (when (< argument-index 0)
+          (setq argument-index 0))
+        (list (or (elisp--current-symbol)
+                  (thing-at-point 'symbol))
+              argument-index)))))
 
 (defun eldoc-eask--funcall (callback &rest _ignored)
   "Document function call at point.
 
-Mainly copy it from `elisp-eldoc-funcall' function"
-  (when-let* ((sym-info (elisp--fnsym-in-current-sexp))
+Mainly copy it from `elisp-eldoc-funcall' function."
+  (when-let* ((sym-info (eldoc-eask--fnsym-in-current-sexp))
               (fn-sym (car sym-info))
               ((member (eask-2str fn-sym) eask-file-keywords)))
     (setf (car sym-info) (intern (format "eask-f-%s" fn-sym)))
+    (setq fn-sym (car sym-info))
     (funcall callback (apply #'elisp-get-fnsym-args-string sym-info)
              :thing fn-sym
-             :face (if (functionp fn-sym)
-                       'font-lock-function-name-face
-                     'font-lock-keyword-face))))
+             :face 'font-lock-keyword-face)))
 
 (defun eldoc-eask--function ()
   "Main eldoc entry.
@@ -68,9 +89,11 @@ Mainly copy it from `elisp-eldoc-documentation-function' function."
                      (when doc
                        (setq str
                              (format "%s: %s"
-                                     (propertize (prin1-to-string
-                                                  (plist-get plist :thing))
-                                                 'face (plist-get plist :face))
+                                     (eldoc-eask--s-replace
+                                      "eask-f-" ""
+                                      (propertize (prin1-to-string
+                                                   (plist-get plist :thing))
+                                                  'face (plist-get plist :face)))
                                      doc))))))
     (or (progn (eldoc-eask--funcall callback) str))))
 
