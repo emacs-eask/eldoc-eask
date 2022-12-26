@@ -56,7 +56,7 @@
 ;;
 
 (defun eldoc-eask--fnsym-in-current-sexp ()
-  "Mainly copy it from `elisp--fnsym-in-current-sexp' function"
+  "Mainly copy it from `elisp--fnsym-in-current-sexp' function."
   (save-excursion
     (unless (nth 8 (syntax-ppss))
       (let ((argument-index (1- (elisp--beginning-of-sexp))))
@@ -68,7 +68,7 @@
               argument-index)))))
 
 (defun eldoc-eask--funcall (callback &rest _ignored)
-  "Document function call at point.
+  "Document function call (CALLBACK) at point.
 
 Mainly copy it from `elisp-eldoc-funcall' function."
   (when-let* ((sym-info (eldoc-eask--fnsym-in-current-sexp))
