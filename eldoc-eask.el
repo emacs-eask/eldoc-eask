@@ -42,16 +42,6 @@
   :link '(url-link :tag "Repository" "https://github.com/emacs-eask/eldoc-eask"))
 
 ;;
-;; (@* "Util" )
-;;
-
-(defun eldoc-eask--s-replace (old new s)
-  "Replace OLD with NEW in S each time it occurs."
-  (if (fboundp #'string-replace)
-      (string-replace old new s)
-    (replace-regexp-in-string (regexp-quote old) new s t t)))
-
-;;
 ;; (@* "Core" )
 ;;
 
@@ -89,7 +79,7 @@ Mainly copy it from `elisp-eldoc-documentation-function' function."
                      (when doc
                        (setq str
                              (format "%s: %s"
-                                     (eldoc-eask--s-replace
+                                     (eask-s-replace
                                       "eask-f-" ""
                                       (propertize (prin1-to-string
                                                    (plist-get plist :thing))
