@@ -6,7 +6,7 @@
 ;; Maintainer: Shen, Jen-Chieh <jcs090218@gmail.com>
 ;; URL: https://github.com/emacs-eask/eldoc-eask
 ;; Version: 0.1.0
-;; Package-Requires: ((emacs "26.1") (eask-api "0.1.0"))
+;; Package-Requires: ((emacs "26.1") (eask "0.1.0"))
 ;; Keywords: convenience
 
 ;; This file is not part of GNU Emacs.
@@ -33,7 +33,7 @@
 
 (require 'eldoc)
 
-(require 'eask-api-core)
+(require 'eask-core)
 
 (defgroup eldoc-eask nil
   "Eldoc support for Eask-file."
