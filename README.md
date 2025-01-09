@@ -17,7 +17,7 @@
   :hook (eask-mode . (lambda () (eldoc-eask-enable))))
 ```
 
-## Contribute
+## 🛠️ Contribute
 
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
 [![Elisp styleguide](https://img.shields.io/badge/elisp-style%20guide-purple)](https://github.com/bbatsov/emacs-lisp-style-guide)
