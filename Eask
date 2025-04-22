@@ -1,3 +1,5 @@
+;; -*- mode: eask; lexical-binding: t -*-
+
 (package "eldoc-eask"
          "0.1.0"
          "Eldoc support for Eask-file")
